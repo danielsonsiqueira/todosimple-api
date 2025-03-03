@@ -1,5 +1,6 @@
 package com.danielsonsiqueira.todosimple.models;
 
+import com.danielsonsiqueira.todosimple.models.enums.ProfileEnum;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.*;
@@ -9,7 +10,10 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.fasterxml.jackson.annotation.JsonProperty.Access.WRITE_ONLY;
 
@@ -61,5 +65,20 @@ public class User {
     @OneToMany(mappedBy = "user")
     @JsonProperty(access = WRITE_ONLY)
     private List<Task> tasks = new ArrayList<Task>();
+
+
+    @Column(name = "profile", nullable = false)
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_profile")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private Set<Integer> profiles = new HashSet<>();
+
+    public Set<ProfileEnum> getProfiles() {
+        return this.profiles.stream().map(x -> ProfileEnum.toEnum(x)).collect(Collectors.toSet());
+    }
+
+    public void addProfile(ProfileEnum profileEnum) {
+        this.profiles.add(profileEnum.getCode());
+    }
 
 }
