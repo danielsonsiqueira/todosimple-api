@@ -57,6 +57,7 @@ public class SecurityConfig {
         this.authenticationManager = authenticationManagerBuilder.build();
 
         http.authorizeHttpRequests()
+                .antMatchers("/view/**", "/scripts/**", "/teste.html").permitAll()
                 .antMatchers(HttpMethod.POST, PUBLIC_MATCHERS_POST).permitAll()
                 .antMatchers(PUBLIC_MATCHERS).permitAll()
                 .anyRequest().authenticated().and()
@@ -74,6 +75,7 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration().applyPermitDefaultValues();
+        
         configuration.setAllowedMethods(Arrays.asList("POST", "GET", "PUT", "DELETE"));
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
